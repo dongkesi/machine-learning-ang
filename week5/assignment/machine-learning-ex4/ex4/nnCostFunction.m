@@ -62,12 +62,55 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+y_t = eye(max(y))(y, :);
 
+a1 = X;
+a1 = [ones(m, 1) a1];
 
+z2 = a1 * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(m, 1) a2];
 
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
 
+% Cost
+R = lambda / (2 * m) * (sum(sum(Theta1(:, 2:end).^2)) + sum(sum(Theta2(:, 2:end).^2))); 
+J = 1 / m .* sum(sum(-y_t .* log(a3) - (1 - y_t) .* log(1 - a3)));
+J = J + R;
 
+% Grad
+for t = 1 : m,
+  % 1 X 401
+  a1 = X(t, :);
+  a1 = [1 a1];
+  
+  % 1 X 25 <= 1 X 401 * 401 X 25
+  z2 = a1 * Theta1';
+  a2 = sigmoid(z2);
+  a2 = [1 a2];
+  
+  % 1 X 10 <= 1 X 26 * 26 X 10
+  z3 = a2 * Theta2';
+  a3 = sigmoid(z3);
+  
+  % 1 X 10 <= 1 X 10 - 1 X 10
+  delta3 = a3 - y_t(t, :);
+  % 1 X 25 <= 1 X 10 * 10 X 25 .* 1 X 25;
+  delta2 = delta3 * Theta2(:, 2:end) .* sigmoidGradient(z2);
 
+  % 25 X 401 <= 25 X 1 * 1 X 401
+  Theta1_grad += delta2' * a1;
+  %Theta1_grad(:, 2:end) += lambda * Theta1(:, 2:end);
+  % 10 X 26 <= 10 X 26 + 10 X 1 * 1 X 26
+  Theta2_grad += delta3' * a2;
+  %Theta2_grad(:, 2:end) += lambda * Theta2(:, 2:end);
+endfor
+
+Theta1_grad(:, 2:end) += lambda * Theta1(:, 2:end);  
+Theta1_grad ./= m;
+Theta2_grad(:, 2:end) += lambda * Theta2(:, 2:end);
+Theta2_grad ./= m;
 
 
 
