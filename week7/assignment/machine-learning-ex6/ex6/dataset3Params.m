@@ -23,7 +23,21 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
-
+steps = [0.01 0.03 0.1 0.3 1 3 10 30];
+min_error = realmax;
+for C_ = steps,
+  for sigma_ = steps,
+    model= svmTrain(X, y, C_, @(x1, x2) gaussianKernel(x1, x2, sigma_)); 
+    predictions = svmPredict(model, Xval);
+    error = mean(double(predictions ~= yval));
+    %fprintf("C_=%f, sigma_=%f, error=%f, mini_error=%f\n", C_, sigma_, error, min_error);
+    if error < min_error,
+      min_error = error;
+      C = C_;
+      sigma = sigma_;
+    endif
+  endfor
+endfor
 
 
 
