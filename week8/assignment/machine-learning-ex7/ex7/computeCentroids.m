@@ -26,7 +26,10 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
-
+for i = 1:K,
+  mask = idx == i;
+  centroids(i, :) = (mask' * X) / (mask' * mask);
+endfor
 
 
 

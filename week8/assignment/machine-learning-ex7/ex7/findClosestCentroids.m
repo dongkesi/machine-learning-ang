@@ -22,6 +22,16 @@ idx = zeros(size(X,1), 1);
 %
 
 
+for i = 1:size(X, 1),
+  max_d = realmax;
+  for j = 1:K,
+    d = ((X(i, :) - centroids(j, :)) * (X(i, :) - centroids(j, :))');
+    if d < max_d,
+      max_d = d;
+      idx(i, :) = j;
+    endif
+  endfor
+endfor
 
 
 
