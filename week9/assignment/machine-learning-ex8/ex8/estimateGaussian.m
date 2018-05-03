@@ -22,7 +22,9 @@ sigma2 = zeros(n, 1);
 %
 
 
-
+r = ones(m, 1);
+mu = (X' * r) ./ m;
+sigma2 = (((X' .- mu).^ 2) * r) ./ m;
 
 
 
